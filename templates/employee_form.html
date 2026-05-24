@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Personel Duzenle' if employee_id else 'Yeni Personel' }} | Izin Takip{% endblock %}
+{% block content %}
+  <section class="narrow">
+    <p class="eyebrow">{{ 'Personel duzenle' if employee_id else 'Yeni personel' }}</p>
+    <h1>{{ 'Personel bilgileri' if employee_id else 'Personel kaydi' }}</h1>
+    <p class="subtle">Ise baslama tarihi degisirse izin hakki yeni tarihe gore tekrar hesaplanir.</p>
+    {% if error %}
+      <div class="flash error">{{ error }}</div>
+    {% endif %}
+    <form method="post" action="{{ '/employees/' ~ employee_id if employee_id else '/employees' }}" class="form-card">
+      <label>
+        Ad
+        <input name="first_name" value="{{ form.first_name or '' }}" required>
+      </label>
+      <label>
+        Soyad
+        <input name="last_name" value="{{ form.last_name or '' }}" required>
+      </label>
+      <label>
+        Ise baslama tarihi
+        <input name="hire_date" type="date" value="{{ form.hire_date or '' }}" required>
+      </label>
+      <label class="checkbox">
+        <input name="is_active" type="checkbox" {% if form.is_active is not defined or form.is_active %}checked{% endif %}>
+        Aktif personel
+      </label>
+      <div class="actions">
+        <a class="button secondary" href="{{ '/employees/' ~ employee_id if employee_id else '/employees' }}">Vazgec</a>
+        <button type="submit">{{ 'Guncelle' if employee_id else 'Kaydet' }}</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

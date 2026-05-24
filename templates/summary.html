@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Ozet Rapor | Izin Takip{% endblock %}
+{% block content %}
+  <section class="page-head">
+    <div>
+      <p class="eyebrow">Rapor</p>
+      <h1>Personel izin ozeti</h1>
+    </div>
+  </section>
+
+  <form class="filter" method="get" action="/reports/summary">
+    <input name="q" value="{{ q }}" placeholder="Isme gore ara">
+    <button type="submit">Ara</button>
+  </form>
+
+  <section class="table-card">
+    <div class="table employee-table">
+      <div class="row header">
+        <span>Ad Soyad</span>
+        <span>Ise Baslama</span>
+        <span>Yil</span>
+        <span>Hak</span>
+        <span>Kullanilan</span>
+        <span>Kalan</span>
+        <span>Durum</span>
+        <span>Islemler</span>
+      </div>
+      {% for employee in employees %}
+        <div class="row">
+          <a class="name-link" href="/employees/{{ employee.id }}">{{ employee.full_name }}</a>
+          <span>{{ employee.hire_date }}</span>
+          <span>{{ employee.completed_years }}</span>
+          <span>{{ "%g"|format(employee.entitlement_days) }}</span>
+          <span>{{ "%g"|format(employee.used_days) }}</span>
+          <span>{{ "%g"|format(employee.remaining_days) }}</span>
+          <span class="pill {{ 'ok' if employee.is_active else 'muted' }}">{{ 'Aktif' if employee.is_active else 'Pasif' }}</span>
+          <span class="row-actions">
+            <a class="text-action" href="/employees/{{ employee.id }}">Detay</a>
+            <a class="text-action" href="/employees/{{ employee.id }}/edit">Duzenle</a>
+          </span>
+        </div>
+      {% endfor %}
+      {% if not employees %}
+        <div class="empty">Rapor icin kayit bulunamadi.</div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

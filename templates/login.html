@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Giris | Izin Takip{% endblock %}
+{% block content %}
+  <section class="auth-card">
+    <h1>Admin Girisi</h1>
+    <p>Personel izin kayitlarini yonetmek icin giris yapin.</p>
+    {% if error %}
+      <div class="flash error">{{ error }}</div>
+    {% endif %}
+    <form method="post" action="/login" class="stack">
+      <label>
+        Kullanici adi
+        <input name="username" autocomplete="username" required>
+      </label>
+      <label>
+        Sifre
+        <input name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit">Giris yap</button>
+    </form>
+    <small>Varsayilan hesap: admin / admin123</small>
+  </section>
+{% endblock %}

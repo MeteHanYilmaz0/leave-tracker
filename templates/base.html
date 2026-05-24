@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Izin Takip{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/employees">Izin Takip</a>
+      {% if admin %}
+        <nav>
+          <a href="/employees">Personel</a>
+          <a href="/reports/summary">Ozet Rapor</a>
+          <form method="post" action="/logout">
+            <button class="ghost" type="submit">Cikis</button>
+          </form>
+        </nav>
+      {% endif %}
+    </header>
+    <main class="shell">
+      {% if flash %}
+        <div class="flash {{ flash_level }}">{{ flash }}</div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

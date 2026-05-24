@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ employee.full_name }} | Izin Takip{% endblock %}
+{% block content %}
+  <section class="page-head">
+    <div>
+      <p class="eyebrow">Personel detayi</p>
+      <h1>{{ employee.full_name }}</h1>
+      <p class="subtle">Ise baslama: {{ employee.hire_date }}</p>
+    </div>
+    <div class="actions">
+      <a class="button secondary" href="/employees">Listeye don</a>
+      <a class="button" href="/employees/{{ employee.id }}/edit">Duzenle</a>
+      <form method="post" action="/employees/{{ employee.id }}/delete" onsubmit="return confirm('Bu personel ve tum izin kayitlari silinsin mi?');">
+        <button class="danger" type="submit">Sil</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="summary-strip detail-summary">
+    <div><span>Tamamlanan yil</span><strong>{{ employee.completed_years }}</strong></div>
+    <div><span>Toplam hak</span><strong>{{ "%g"|format(employee.entitlement_days) }}</strong></div>
+    <div><span>Kullanilan</span><strong>{{ "%g"|format(employee.used_days) }}</strong></div>
+    <div><span>Kalan</span><strong>{{ "%g"|format(employee.remaining_days) }}</strong></div>
+  </section>
+  <section class="info-note">
+    <strong>Sonraki hak artis tarihi:</strong>
+    {{ employee.next_anniversary }} tarihinde toplam hak {{ "%g"|format(employee.next_entitlement_days) }} gun olur.
+  </section>
+
+  <section class="grid-two">
+    <div class="panel">
+      <h2>Yeni izin girisi</h2>
+      <form method="post" action="/employees/{{ employee.id }}/leaves" enctype="multipart/form-data" class="stack">
+        <div class="inline-fields">
+          <label>
+            Baslangic tarihi
+            <input name="start_date" type="date">
+          </label>
+          <label>
+            Bitis tarihi
+            <input name="end_date" type="date">
+          </label>
+        </div>
+        <label>
+          Kullanilan gun
+          <input name="days_used" type="number" min="0.5" step="0.5" required>
+        </label>
+        <label>
+          Not
+          <textarea name="note" rows="4" placeholder="Opsiyonel aciklama"></textarea>
+        </label>
+        <label>
+          PDF dilekce
+          <input name="document" type="file" accept="application/pdf">
+        </label>
+        <button type="submit">Izin kaydet</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>Izin gecmisi</h2>
+      <div class="leave-list">
+        {% for leave in leaves %}
+          <article class="leave-item">
+            <div>
+              <strong>{{ "%g"|format(leave.days_used) }} gun</strong>
+              <span>{{ leave.start_date or '-' }} / {{ leave.end_date or '-' }}</span>
+              {% if leave.note %}<p>{{ leave.note }}</p>{% endif %}
+            </div>
+            {% if leave.document_id %}
+              <a class="button secondary small" href="/leaves/{{ leave.id }}/document" target="_blank">PDF</a>
+            {% endif %}
+          </article>
+        {% endfor %}
+        {% if not leaves %}
+          <div class="empty">Henuz izin kaydi yok.</div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock %}
