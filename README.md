@@ -5,7 +5,8 @@ Basit personel izin takip uygulamasi. FastAPI, SQLite ve server-rendered HTML ku
 ## Kurulum
 
 ```powershell
-cd C:\Users\mete_\Desktop\leave-tracker
+git clone https://github.com/MeteHanYilmaz0/leave-tracker.git
+cd leave-tracker
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -39,5 +40,5 @@ $env:SECRET_KEY="uzun-rastgele-bir-deger"
 ## Test
 
 ```powershell
-pytest
+python -m pytest
 ```
