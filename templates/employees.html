@@ -7,7 +7,12 @@
       <h1>Izin haklari</h1>
       <p class="subtle">Her tamamlanan calisma yili personele 14 gun izin hakki ekler.</p>
     </div>
-    <a class="button" href="/employees/new">Yeni personel</a>
+    <a class="button" href="/employees/new" data-shortcut-new>Yeni personel</a>
+  </section>
+
+  <section class="shortcut-strip" aria-label="Kisayollar">
+    <span><kbd>/</kbd> Ara</span>
+    <span><kbd>Alt</kbd> + <kbd>N</kbd> Yeni personel</span>
   </section>
 
   <section class="summary-strip">
@@ -17,7 +22,7 @@
   </section>
 
   <form class="filter" method="get" action="/employees">
-    <input name="q" value="{{ q }}" placeholder="Isme gore ara">
+    <input name="q" value="{{ q }}" placeholder="Isme gore ara" data-shortcut-search>
     <button type="submit">Ara</button>
   </form>
 

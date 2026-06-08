@@ -19,12 +19,15 @@ if not exist ".venv\Scripts\python.exe" (
     exit /b 1
 )
 
-echo Installing requirements...
-".venv\Scripts\python.exe" -m pip install -r requirements.txt
-if errorlevel 1 (
-    echo Requirements could not be installed.
-    pause
-    exit /b 1
+if not exist ".venv\.requirements-installed" (
+    echo Installing requirements...
+    ".venv\Scripts\python.exe" -m pip install -r requirements.txt
+    if errorlevel 1 (
+        echo Requirements could not be installed.
+        pause
+        exit /b 1
+    )
+    echo installed > ".venv\.requirements-installed"
 )
 
 echo Opening Izin Takip at http://127.0.0.1:8000

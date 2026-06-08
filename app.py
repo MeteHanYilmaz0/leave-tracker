@@ -48,6 +48,14 @@ def parse_optional_date(value: str | None) -> str | None:
     return value
 
 
+def validate_leave_dates(start_date: str | None, end_date: str | None) -> tuple[str | None, str | None]:
+    parsed_start = parse_optional_date(start_date)
+    parsed_end = parse_optional_date(end_date)
+    if parsed_start and parsed_end and date.fromisoformat(parsed_end) < date.fromisoformat(parsed_start):
+        raise ValueError("end_before_start")
+    return parsed_start, parsed_end
+
+
 def completed_years(hire_date: date, as_of: date | None = None) -> int:
     current = as_of or today_utc()
     years = current.year - hire_date.year
@@ -463,10 +471,13 @@ async def create_leave(
         return render(request, "not_found.html", {"title": "Personel bulunamadi"}, 404)
     stats = employee_stats(row)
     try:
-        parsed_start = parse_optional_date(start_date)
-        parsed_end = parse_optional_date(end_date)
+        parsed_start, parsed_end = validate_leave_dates(start_date, end_date)
     except ValueError:
-        return flash_redirect(f"/employees/{employee_id}", "Izin tarihi gecersiz.", "error")
+        return flash_redirect(
+            f"/employees/{employee_id}",
+            "Izin tarihi gecersiz. Bitis tarihi baslangictan once olamaz.",
+            "error",
+        )
     if days_used <= 0:
         return flash_redirect(f"/employees/{employee_id}", "Kullanilan izin gunu 0'dan buyuk olmali.", "error")
     if days_used > stats["remaining_days"]:

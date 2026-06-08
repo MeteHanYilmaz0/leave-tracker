@@ -100,6 +100,23 @@ def test_leave_entry_cannot_exceed_remaining_days(client):
     assert "Kalan izin hakki yetersiz" in detail.text
 
 
+def test_leave_entry_rejects_end_date_before_start_date(client):
+    test_client, _ = client
+    login(test_client)
+    employee_id = create_employee(test_client, hire_date="2023-04-11")
+
+    response = test_client.post(
+        f"/employees/{employee_id}/leaves",
+        data={"days_used": "1", "start_date": "2026-05-12", "end_date": "2026-05-01", "note": ""},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 303
+    detail = test_client.get(f"/employees/{employee_id}")
+    assert "Bitis tarihi baslangictan once olamaz" in detail.text
+    assert ">42<" in detail.text
+
+
 def test_pdf_upload_and_download(client):
     test_client, _ = client
     login(test_client)
@@ -170,6 +187,26 @@ def test_employee_edit_updates_hire_date_and_entitlement(client):
     detail = test_client.get(f"/employees/{employee_id}")
     assert "Toplam hak" in detail.text
     assert ">56<" in detail.text
+
+
+def test_shortcuts_are_exposed_on_pages(client):
+    test_client, _ = client
+    login(test_client)
+    employee_id = create_employee(test_client, hire_date="2023-04-11")
+
+    employees = test_client.get("/employees")
+    detail = test_client.get(f"/employees/{employee_id}")
+    script = test_client.get("/static/app.js")
+
+    assert employees.status_code == 200
+    assert 'src="http://testserver/static/app.js"' in employees.text
+    assert "data-shortcut-search" in employees.text
+    assert "data-shortcut-new" in employees.text
+    assert detail.status_code == 200
+    assert "data-shortcut-leave-days" in detail.text
+    assert "Alt" in detail.text
+    assert script.status_code == 200
+    assert "data-shortcut-search" in script.text
 
 
 def test_employee_delete_removes_employee_and_related_leave(client):

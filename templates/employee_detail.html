@@ -27,6 +27,11 @@
     {{ employee.next_anniversary }} tarihinde toplam hak {{ "%g"|format(employee.next_entitlement_days) }} gun olur.
   </section>
 
+  <section class="shortcut-strip" aria-label="Kisayollar">
+    <span><kbd>Alt</kbd> + <kbd>L</kbd> Izin gunu gir</span>
+    <span><kbd>Alt</kbd> + <kbd>N</kbd> Yeni personel</span>
+  </section>
+
   <section class="grid-two">
     <div class="panel">
       <h2>Yeni izin girisi</h2>
@@ -43,7 +48,8 @@
         </div>
         <label>
           Kullanilan gun
-          <input name="days_used" type="number" min="0.5" step="0.5" required>
+          <input name="days_used" type="number" min="0.5" step="0.5" inputmode="decimal" required data-shortcut-leave-days>
+          <small>Kalan hak: {{ "%g"|format(employee.remaining_days) }} gun. Yarim gun icin 0.5 girilebilir.</small>
         </label>
         <label>
           Not

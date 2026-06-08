@@ -15,7 +15,7 @@ uvicorn app:app --reload
 
 Tarayici: http://127.0.0.1:8000
 
-Windows'ta hizli baslatmak icin proje klasorundeki `start_leave_tracker.bat` dosyasini calistirabilirsiniz.
+Windows'ta hizli baslatmak icin proje klasorundeki `start_leave_tracker.bat` dosyasini calistirabilirsiniz. Ilk calistirmada sanal ortam ve paketler hazirlanir, sonraki acilislarda uygulama daha hizli baslar.
 
 Varsayilan admin hesabi:
 
@@ -37,8 +37,15 @@ $env:SECRET_KEY="uzun-rastgele-bir-deger"
 - Her tamamlanan calisma yili icin 14 gun izin hakki hesaplanir.
 - Ilk yil dolmadan izin hakki 0 gundur.
 - Kullanilan izin gunu manuel girilir.
+- Bitis tarihi baslangic tarihinden once olan izin kayitlari kabul edilmez.
 - Yanlis girilen izin kayitlari personel detay sayfasindan tek tek silinebilir.
 - PDF dilekceler SQLite veritabaninda saklanir.
+
+## Kisayollar
+
+- `/`: Personel arama kutusuna odaklanir.
+- `Alt + N`: Yeni personel formunu acar.
+- `Alt + L`: Personel detay sayfasinda izin gunu alanina odaklanir.
 
 ## Test
 
