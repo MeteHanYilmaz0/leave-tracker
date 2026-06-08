@@ -506,6 +506,25 @@ async def create_leave(
     return flash_redirect(f"/employees/{employee_id}", "Izin kaydi olusturuldu.")
 
 
+@app.post("/employees/{employee_id}/leaves/{leave_id}/delete")
+def delete_leave(request: Request, employee_id: int, leave_id: int) -> Response:
+    redirect = auth_redirect(request)
+    if redirect:
+        return redirect
+    row = get_employee(employee_id)
+    if row is None:
+        return render(request, "not_found.html", {"title": "Personel bulunamadi"}, 404)
+    with db_connection() as db:
+        leave = db.execute(
+            "SELECT id FROM leave_records WHERE id = ? AND employee_id = ?",
+            (leave_id, employee_id),
+        ).fetchone()
+        if leave is None:
+            return render(request, "not_found.html", {"title": "Izin kaydi bulunamadi"}, 404)
+        db.execute("DELETE FROM leave_records WHERE id = ?", (leave_id,))
+    return flash_redirect(f"/employees/{employee_id}", "Izin kaydi silindi.")
+
+
 @app.get("/leaves/{leave_id}/document")
 def leave_document(request: Request, leave_id: int) -> Response:
     redirect = auth_redirect(request)

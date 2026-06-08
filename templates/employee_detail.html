@@ -67,9 +67,14 @@
               <span>{{ leave.start_date or '-' }} / {{ leave.end_date or '-' }}</span>
               {% if leave.note %}<p>{{ leave.note }}</p>{% endif %}
             </div>
-            {% if leave.document_id %}
-              <a class="button secondary small" href="/leaves/{{ leave.id }}/document" target="_blank">PDF</a>
-            {% endif %}
+            <div class="leave-actions">
+              {% if leave.document_id %}
+                <a class="button secondary small" href="/leaves/{{ leave.id }}/document" target="_blank">PDF</a>
+              {% endif %}
+              <form method="post" action="/employees/{{ employee.id }}/leaves/{{ leave.id }}/delete" onsubmit="return confirm('Bu izin kaydi silinsin mi?');">
+                <button class="danger small" type="submit">Sil</button>
+              </form>
+            </div>
           </article>
         {% endfor %}
         {% if not leaves %}

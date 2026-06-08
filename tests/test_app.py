@@ -120,6 +120,36 @@ def test_pdf_upload_and_download(client):
     assert document.content == pdf_bytes
 
 
+def test_leave_delete_removes_only_selected_leave_and_document(client):
+    test_client, app_module = client
+    login(test_client)
+    employee_id = create_employee(test_client, hire_date="2023-04-11")
+
+    test_client.post(
+        f"/employees/{employee_id}/leaves",
+        data={"days_used": "4", "start_date": "", "end_date": "", "note": "Kalacak"},
+        follow_redirects=False,
+    )
+    test_client.post(
+        f"/employees/{employee_id}/leaves",
+        data={"days_used": "6", "start_date": "", "end_date": "", "note": "Silinecek"},
+        files={"document": ("dilekce.pdf", b"%PDF-1.4\n%test\n", "application/pdf")},
+        follow_redirects=False,
+    )
+
+    response = test_client.post(f"/employees/{employee_id}/leaves/2/delete", follow_redirects=False)
+
+    assert response.status_code == 303
+    assert response.headers["location"] == f"/employees/{employee_id}"
+    with app_module.db_connection() as db:
+        leaves = db.execute("SELECT days_used, note FROM leave_records ORDER BY id").fetchall()
+        documents = db.execute("SELECT id FROM leave_documents").fetchall()
+    assert len(leaves) == 1
+    assert leaves[0]["days_used"] == 4
+    assert leaves[0]["note"] == "Kalacak"
+    assert documents == []
+
+
 def test_employee_edit_updates_hire_date_and_entitlement(client):
     test_client, _ = client
     login(test_client)
